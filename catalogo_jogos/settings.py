@@ -55,6 +55,9 @@ DATABASES = {
 AUTH_PASSWORD_VALIDATORS = []
 
 LANGUAGE_CODE = "pt-br"
+TIME_ZONE = "America/Fortaleza"
+USE_I18N = True
+USE_TZ = True
 
 STATIC_URL = "static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
