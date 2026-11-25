@@ -1,0 +1,37 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Playlist — Catálogo de Jogos{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="site-wrapper">
+        <header class="navbar">
+            <a href="{% url 'listar_jogos' %}" class="logo">
+                <span class="logo-icon">P</span>
+                <span>play<span class="logo-light">list</span></span>
+            </a>
+            <nav>
+                <a class="active" href="{% url 'listar_jogos' %}">Explorar jogos</a>
+            </nav>
+            <span class="header-note">CATÁLOGO DIGITAL</span>
+        </header>
+
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer class="footer">
+            <span>Playlist · Catálogo de Jogos</span>
+            <span>Feito para quem gosta de jogar <span class="footer-heart">♥</span></span>
+        </footer>
+    </div>
+</body>
+</html>

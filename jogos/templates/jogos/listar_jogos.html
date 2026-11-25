@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Explorar jogos | Playlist{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-text">
+        <span class="eyebrow"><span class="eyebrow-line"></span> DESCUBRA SEU PRÓXIMO JOGO</span>
+        <h1>Um universo de<br><span>jogos para explorar.</span></h1>
+        <p>Pesquise títulos, conheça desenvolvedoras e encontre jogos para sua plataforma favorita.</p>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+        <div class="art-circle circle-one"></div>
+        <div class="art-circle circle-two"></div>
+        <div class="controller">⌁</div>
+        <span class="art-star star-one">✦</span>
+        <span class="art-star star-two">✧</span>
+        <span class="art-caption">GAME<br>ON!</span>
+    </div>
+</section>
+
+<section class="catalog-section">
+    <div class="section-heading">
+        <div>
+            <span class="eyebrow">BIBLIOTECA</span>
+            <h2>Encontre um jogo</h2>
+        </div>
+        <span class="result-count">{{ total_jogos }} jogos disponíveis</span>
+    </div>
+
+    <form method="GET" class="filter-box">
+        <div class="search-field">
+            <label for="id_q">Pesquisar por nome</label>
+            <div class="input-wrap">
+                <span class="search-icon">⌕</span>
+                <input type="text" id="id_q" name="q" value="{{ busca }}" placeholder="Ex.: Minecraft, Zelda...">
+            </div>
+        </div>
+
+        <div class="select-field">
+            <label for="id_desenvolvedora">Desenvolvedora</label>
+            <select name="desenvolvedora" id="id_desenvolvedora">
+                <option value="">Todas</option>
+                {% for desenvolvedora in desenvolvedoras %}
+                    <option value="{{ desenvolvedora.id }}" {% if desenvolvedora_selecionada == desenvolvedora.id|stringformat:"s" %}selected{% endif %}>
+                        {{ desenvolvedora.nome }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="select-field">
+            <label for="id_plataforma">Plataforma</label>
+            <select name="plataforma" id="id_plataforma">
+                <option value="">Todas</option>
+                {% for plataforma in plataformas %}
+                    <option value="{{ plataforma.id }}" {% if plataforma_selecionada == plataforma.id|stringformat:"s" %}selected{% endif %}>
+                        {{ plataforma.nome }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit" class="filter-button">Filtrar <span>→</span></button>
+        <a href="{% url 'listar_jogos' %}" class="clear-button">Limpar</a>
+    </form>
+
+    <div class="list-heading">
+        <h3>Jogos do catálogo</h3>
+        <span>Página {{ jogos.number }} de {{ jogos.paginator.num_pages|default:1 }}</span>
+    </div>
+
+    {% if jogos %}
+        <div class="games-grid">
+            {% for jogo in jogos %}
+                <article class="game-card">
+                    <div class="game-cover cover-{{ forloop.counter0|add:1|divisibleby:4|yesno:'four,one' }}">
+                        <span class="cover-symbol">
+                            {% if forloop.counter|divisibleby:4 %}✧
+                            {% elif forloop.counter|divisibleby:3 %}◈
+                            {% elif forloop.counter|divisibleby:2 %}✦
+                            {% else %}◇{% endif %}
+                        </span>
+                        <span class="cover-year">{{ jogo.ano_lancamento }}</span>
+                    </div>
+                    <div class="game-info">
+                        <h4>{{ jogo.nome }}</h4>
+                        <p class="game-description">{{ jogo.descricao }}</p>
+                        <div class="game-details">
+                            <span class="detail-label">DESENVOLVEDORA</span>
+                            <strong>{{ jogo.desenvolvedora.nome }}</strong>
+                        </div>
+                        <div class="game-bottom">
+                            <span class="platform-tag">{{ jogo.plataforma.nome }}</span>
+                            <span class="game-year">{{ jogo.ano_lancamento }}</span>
+                        </div>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <span>⌕</span>
+            <h3>Nenhum jogo encontrado</h3>
+            <p>Tente alterar a pesquisa ou os filtros selecionados.</p>
+            <a href="{% url 'listar_jogos' %}">Ver todos os jogos</a>
+        </div>
+    {% endif %}
+
+    {% if jogos.paginator.num_pages > 1 %}
+        <div class="pagination">
+            {% if jogos.has_previous %}
+                <a class="page-link previous" href="?q={{ busca|urlencode }}&desenvolvedora={{ desenvolvedora_selecionada }}&plataforma={{ plataforma_selecionada }}&page={{ jogos.previous_page_number }}">← Anterior</a>
+            {% else %}
+                <span class="page-link disabled">← Anterior</span>
+            {% endif %}
+
+            <span class="page-current">Página <strong>{{ jogos.number }}</strong> de {{ jogos.paginator.num_pages }}</span>
+
+            {% if jogos.has_next %}
+                <a class="page-link next" href="?q={{ busca|urlencode }}&desenvolvedora={{ desenvolvedora_selecionada }}&plataforma={{ plataforma_selecionada }}&page={{ jogos.next_page_number }}">Próxima →</a>
+            {% else %}
+                <span class="page-link disabled">Próxima →</span>
+            {% endif %}
+        </div>
+    {% endif %}
+</section>
+{% endblock %}
